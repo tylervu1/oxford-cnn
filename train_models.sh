@@ -16,9 +16,9 @@ python tools/train.py \
   --config 'configs/resnet/resnet50_b16x8_flowers.py' \
   --work-dir 'output/resnet50_b16x8_flowers'
 
-python tools/train.py \
-  --config 'configs/resnet/resnet50_b16x8_flowers_mixup.py' \
-  --work-dir 'output/resnet50_b16x8_flowers_mixup'
+# python tools/train.py \
+#   --config 'configs/resnet/resnet50_b16x8_flowers_mixup.py' \
+#   --work-dir 'output/resnet50_b16x8_flowers_mixup'
 
 #######################################################
 ## commands below run into memory issues on 2080 gpu ##
