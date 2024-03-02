@@ -1,5 +1,6 @@
 # Midterm Report Progress
 ## Progress from Tyler Vu + Helen Zhao
+### Setup
 The initial resnet18 model is the same one from Tutorial 1. We went ahead and implemented this model on the HKU Phase 2
 GPU clusters. To set up the environment (assuming this is your first time running this), run the following:
 ```shell
