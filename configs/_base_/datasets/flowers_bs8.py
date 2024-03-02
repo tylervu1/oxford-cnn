@@ -1,3 +1,5 @@
+import torch
+
 # dataset settings
 torch.cuda.empty_cache()
 dataset_type = 'Flowers'
