@@ -4,9 +4,9 @@
 # chmod +x train_models.sh
 # ./train_models.sh
 
-# python tools/train.py \
-#   --config 'configs/resnet/resnet18_flowers_bs128.py' \
-#   --work-dir 'output/resnet18_flowers_bs128'
+python tools/train.py \
+  --config 'configs/resnet/resnet18_flowers_bs128.py' \
+  --work-dir 'output/resnet18_flowers_bs128'
 
 python tools/train.py \
   --config 'configs/resnet/resnet34_b16x8_flowers.py' \
