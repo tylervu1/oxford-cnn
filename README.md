@@ -32,8 +32,19 @@ You can test the trained model by running the following command
 ```shell
 python tools/test.py \
   --config 'configs/resnet/resnet18_flowers_bs128.py' \
-  --checkpoint 'output/resnet18_flowers_bs128/epoch_100.pth' \
+  --checkpoint 'output/resnet18_flowers_bs128/epoch_99.pth' \
   --out 'output/resnet18_flowers_bs128/test.json'
+
+python tools/test.py \
+  --config 'configs/resnet/resnet34_b16x8_flowers.py' \
+  --checkpoint 'output/resnet34_b16x8_flowers/epoch_99.pth' \
+  --out 'output/resnet34_b16x8_flowers/test.json'
+
+python tools/test.py \
+  --config 'configs/resnet/resnet50_b16x8_flowers.py' \
+  --checkpoint 'output/resnet50_b16x8_flowers/epoch_99.pth' \
+  --out 'output/resnet50_b16x8_flowers/test.json'
+
 ```
 The output file will be saved in the ```--out```.
 
