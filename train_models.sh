@@ -16,15 +16,24 @@ python tools/train.py \
   --config 'configs/resnet/resnet50_b16x8_flowers.py' \
   --work-dir 'output/resnet50_b16x8_flowers'
 
+python tools/train.py \
+  --config 'configs/resnet/resnet50_b16x8_flowers_mixup.py' \
+  --work-dir 'output/resnet50_b16x8_flowers_mixup'
+
 python tools/test.py \
   --config 'configs/resnet/resnet34_b16x8_flowers.py' \
   --checkpoint 'output/resnet34_b16x8_flowers/epoch_99.pth' \
   --out 'output/resnet34_b16x8_flowers/test.json'
 
 python tools/test.py \
-  --config 'configs/resnet/resnet50_b16x8_flowers' \
+  --config 'configs/resnet/resnet50_b16x8_flowers.py' \
   --checkpoint 'output/resnet50_b16x8_flowers/epoch_99.pth' \
   --out 'output/resnet50_b16x8_flowers/test.json'
+
+python tools/test.py \
+  --config 'configs/resnet/resnet50_b16x8_flowers_mixup.py' \
+  --checkpoint 'output/resnet50_b16x8_flowers_mixup/epoch_99.pth' \
+  --out 'output/resnet50_b16x8_flowers_mixup/test.json'
 
 # python tools/train.py \
 #   --config 'configs/resnet/resnet50_b16x8_flowers_mixup.py' \
