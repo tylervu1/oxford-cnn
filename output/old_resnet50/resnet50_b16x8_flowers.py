@@ -41,7 +41,7 @@ test_pipeline = [
     dict(type='Collect', keys=['img'])
 ]
 data = dict(
-    samples_per_gpu=8,
+    samples_per_gpu=32,
     workers_per_gpu=1,
     train=dict(
         type='Flowers',
@@ -96,7 +96,7 @@ evaluation = dict(interval=1, metric='accuracy')
 optimizer = dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=None)
 lr_config = dict(policy='step', step=[100, 150])
-runner = dict(type='EpochBasedRunner', max_epochs=200)
+runner = dict(type='EpochBasedRunner', max_epochs=100)
 checkpoint_config = dict(interval=1)
 log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 dist_params = dict(backend='nccl')
