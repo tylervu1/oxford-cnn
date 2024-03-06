@@ -61,21 +61,21 @@
 ## commands below run into memory issues on 2080 gpu ##
 #######################################################
 
-#python tools/train.py \
-#   --config 'configs/resnet/resnet101_b16x8_flowers.py' \
-#   --work-dir 'output/resnet101_b16x8_flowers'
+python tools/train.py \
+   --config 'configs/resnet/resnet101_b16x8_flowers.py' \
+   --work-dir 'output/resnet101_b16x8_flowers'
 
-#python tools/train.py \
-#   --config 'configs/resnet/resnet152_b16x8_flowers.py' \
-#   --work-dir 'output/resnet152_b16x8_flowers'
+python tools/train.py \
+   --config 'configs/resnet/resnet152_b16x8_flowers.py' \
+   --work-dir 'output/resnet152_b16x8_flowers'
 
-#python tools/test.py \
-#   --config 'configs/resnet/resnet101_b16x8_flowers.py' \
-#   --checkpoint 'output/resnet101_b16x8_flowers/epoch_99.pth' \
-#   --out 'output/resnet101_b16x8_flowers/test.json'
+python tools/test.py \
+   --config 'configs/resnet/resnet101_b16x8_flowers.py' \
+   --checkpoint 'output/resnet101_b16x8_flowers/epoch_99.pth' \
+   --out 'output/resnet101_b16x8_flowers/test.json'
 
-#python tools/test.py \
-#   --config 'configs/resnet/resnet152_b16x8_flowers.py' \
-#   --checkpoint 'output/resnet152_b16x8_flowers/epoch_99.pth' \
-#   --out 'output/resnet152_b16x8_flowers/test.json'
+python tools/test.py \
+   --config 'configs/resnet/resnet152_b16x8_flowers.py' \
+   --checkpoint 'output/resnet152_b16x8_flowers/epoch_99.pth' \
+   --out 'output/resnet152_b16x8_flowers/test.json'
 
