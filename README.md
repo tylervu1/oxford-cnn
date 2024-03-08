@@ -96,6 +96,12 @@ The testing results seem a bit fluctuating and we are still looking for improvem
 [![codecov](https://codecov.io/gh/open-mmlab/mmclassification/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmclassification)
 [![license](https://img.shields.io/github/license/open-mmlab/mmclassification.svg)](https://github.com/open-mmlab/mmclassification/blob/master/LICENSE)
 
+## Progress from Peter Lu
+
+## AlexNet
+
+An AlexNet model was implemented from scratch. The model was designed with 17 classed to fit the usage of flower dataset, also reshaping every image to the standard 224*224 pixels. The training accuracy is high but the testing accuracy still needs improvements. The code of AlexNet implemented from scratch is in appendix.
+
 ## Introduction
 
 English | [简体中文](/README_zh-CN.md)
