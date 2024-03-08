@@ -19,9 +19,59 @@ Classifier: Programming Language :: Python :: 3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
-<div align="center">
-  <img src="resources/mmcls-logo.png" width="600"/>
-</div>
+# Midterm Report Progress
+## Progress from Tyler Vu + Helen Zhao
+### Setup
+The initial resnet18 model is the same one from Tutorial 1. We went ahead and implemented this model on the HKU Phase 2
+GPU clusters. To set up the environment (assuming this is your first time running this), run the following:
+```shell
+git clone https://github.com/tylervu1/oxford-cnn
+conda create -n mmcls python=3.7 -y
+conda activate mmcls
+conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 cudatoolkit=10.1 -c pytorch
+pip install mmcv==1.5.0
+pip install mmcv-full==1.5.0
+cd oxford-cnn
+pip install -e .
+pip install yapf==0.40.1
+```
+
+### Training + other models
+We were also able to successfully implement resnet34_flowers and resnet50_flowers. Training typically takes a long time so to have this run in the background, the bash script train_models.sh was added (basically runs all your training commands consecutively). To use this, run the following:
+
+```shell
+chmod +x train_models.sh
+./train_models.sh
+```
+
+^ also feel free to take a look at this script to see what commands are running to adjust accordingly
+
+We also attempted to implement resnet50_flowers_cutmix, resnet50_flowers_mixup, resnet101_flowers, resnet152_flowers. However, we ran into issues usually regarding memory issues.
+
+### Test 
+You can test the trained model by running the following command
+```shell
+python tools/test.py \
+  --config 'configs/resnet/resnet18_flowers_bs128.py' \
+  --checkpoint 'output/resnet18_flowers_bs128/epoch_99.pth' \
+  --out 'output/resnet18_flowers_bs128/test.json'
+
+python tools/test.py \
+  --config 'configs/resnet/resnet34_b16x8_flowers.py' \
+  --checkpoint 'output/resnet34_b16x8_flowers/epoch_99.pth' \
+  --out 'output/resnet34_b16x8_flowers/test.json'
+
+python tools/test.py \
+  --config 'configs/resnet/resnet50_b16x8_flowers.py' \
+  --checkpoint 'output/resnet50_b16x8_flowers/epoch_99.pth' \
+  --out 'output/resnet50_b16x8_flowers/test.json'
+
+```
+The output file will be saved in the ```--out```.
+
+I found that testing results were pretty accurate (97.7% testing classification using the 100th epoch). 200 epochs seemed a big redundant, so running 100 epochs should be fine. However, if we want to see further variations/performance improvements between models, we could potentially lower the epochs even further.
+
+At the time I am writing this readme, I am currently training resnet34_flowers and resnet50_flowers, so I will update the testing results once finished. For our midterm report, it would be good to report the results (hopefully improved) with these larger models. However, either further fine-tuning or other models such as VGG or VIT would be beneficial to build a sufficient midterm report.
 
 [![Build Status](https://github.com/open-mmlab/mmclassification/workflows/build/badge.svg)](https://github.com/open-mmlab/mmclassification/actions)
 [![Documentation Status](https://readthedocs.org/projects/mmclassification/badge/?version=latest)](https://mmclassification.readthedocs.io/en/latest/?badge=latest)
@@ -38,22 +88,6 @@ a part of the [OpenMMLab](https://openmmlab.com/) project.
 Documentation: https://mmclassification.readthedocs.io/en/latest/
 
 ![demo](https://user-images.githubusercontent.com/9102141/87268895-3e0d0780-c4fe-11ea-849e-6140b7e0d4de.gif)
-
-### Major features
-
-- Various backbones and pretrained models
-- Bag of training tricks
-- Large-scale training configs
-- High efficiency and extensibility
-
-## License
-
-This project is released under the [Apache 2.0 license](LICENSE).
-
-## Changelog
-
-v0.15.0 was released in 31/8/2021.
-Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark and model zoo
 
@@ -72,17 +106,7 @@ Supported backbones:
 - [x] MobileNetV3
 - [x] Swin-Transformer
 
-## Installation
-
-Please refer to [install.md](docs/install.md) for installation and dataset preparation.
-
-## Getting Started
-
-Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMClassification. There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [adding new dataset](docs/tutorials/new_dataset.md), [designing data pipeline](docs/tutorials/data_pipeline.md), and [adding new modules](docs/tutorials/new_modules.md).
-
 ## Citation
-
-If you find this project useful in your research, please consider cite:
 
 ```BibTeX
 @misc{2020mmclassification,
@@ -92,16 +116,6 @@ If you find this project useful in your research, please consider cite:
     year={2020}
 }
 ```
-
-## Contributing
-
-We appreciate all contributions to improve MMClassification.
-Please refer to [CONTRUBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
-
-## Acknowledgement
-
-MMClassification is an open source project that is contributed by researchers and engineers from various colleges and companies. We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
-We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their own new classifiers.
 
 ## Projects in OpenMMLab
 

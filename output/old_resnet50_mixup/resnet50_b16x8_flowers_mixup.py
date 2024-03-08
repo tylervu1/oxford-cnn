@@ -43,7 +43,11 @@ test_pipeline = [
     dict(type='Collect', keys=['img'])
 ]
 data = dict(
+<<<<<<< Updated upstream:output/old_resnet50_mixup/resnet50_b16x8_flowers_mixup.py
     samples_per_gpu=8,
+=======
+    samples_per_gpu=32,
+>>>>>>> Stashed changes:output/resnet34_b16x8_flowers/resnet34_b16x8_flowers.py
     workers_per_gpu=1,
     train=dict(
         type='Flowers',
