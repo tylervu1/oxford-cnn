@@ -100,7 +100,7 @@ The testing results seem a bit fluctuating and we are still looking for improvem
 
 ## AlexNet
 
-An AlexNet model was implemented from scratch. The model was designed with 17 classed to fit the usage of flower dataset, also reshaping every image to the standard 224*224 pixels. The 1380 images are divided into 17 folders with each folder containing 80 images from respective. A csv file called labels.csv is also created to store a list with images and its labels. The training accuracy is high but the testing accuracy still needs improvements. The code of AlexNet implemented from scratch is in "AlexNet_complete_code.ipynb"
+An AlexNet model was implemented from scratch. The model was designed with 17 classed to fit the usage of flower dataset, also reshaping every image to the standard 224*224 pixels. The 1380 images are divided into 17 folders with each folder containing 80 images from respective class. A CSV file called labels.csv is also created to store a list with images and its labels. The model was trained using V100 in Colab. The validation accuracy is 55%, not extremely high, but reasonable considering that it has 17 different classes. The code of AlexNet implemented from scratch is in "AlexNet_complete_code.ipynb"
 
 ## Introduction
 
