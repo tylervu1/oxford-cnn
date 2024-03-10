@@ -16,7 +16,7 @@ for config in "${configs[@]}"; do
     echo "Processing $base_name"
 
     # File to store epoch vs accuracy data
-    accuracy_file="accuracy_logs/${base_name}_epoch_accuracy.csv"
+    accuracy_file="accuracy_logs/${base_name}_train.csv"
     echo "Epoch,Top-1 Accuracy" > "$accuracy_file"
 
     for epoch in {1..100}; do
