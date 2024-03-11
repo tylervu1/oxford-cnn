@@ -1,6 +1,6 @@
 model = dict(
     type='ImageClassifier',
-    backbone=dict(type='VGG', depth=11, num_classes=17),
+    backbone=dict(type='VGG', depth=16, num_classes=17),
     neck=None,
     head=dict(
         type='ClsHead',
@@ -98,5 +98,5 @@ log_level = 'INFO'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
-work_dir = 'output/vgg11_b32x8_flowers'
+work_dir = 'output/vgg16_b32x8_flowers'
 gpu_ids = range(0, 1)

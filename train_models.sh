@@ -34,7 +34,6 @@ python tools/test.py \
     --checkpoint 'output/resnet50_b16x8_flowers_mixup/epoch_99.pth' \
     --out 'output/resnet50_b16x8_flowers_mixup/test.json'
 
-
 ################################################################
 ## commands below run into memory issues on 2080 gpu (fixed?) ##
 ################################################################
@@ -56,4 +55,3 @@ python tools/test.py \
    --config 'configs/resnet/resnet152_b16x8_flowers.py' \
    --checkpoint 'output/resnet152_b16x8_flowers/epoch_99.pth' \
    --out 'output/resnet152_b16x8_flowers/test.json'
-

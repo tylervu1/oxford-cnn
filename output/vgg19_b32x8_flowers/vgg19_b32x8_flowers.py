@@ -1,6 +1,6 @@
 model = dict(
     type='ImageClassifier',
-    backbone=dict(type='VGG', depth=11, num_classes=17),
+    backbone=dict(type='VGG', depth=19, num_classes=17),
     neck=None,
     head=dict(
         type='ClsHead',
@@ -91,12 +91,12 @@ optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=None)
 lr_config = dict(policy='step', step=[100, 150])
 runner = dict(type='EpochBasedRunner', max_epochs=100)
-checkpoint_config = dict(interval=3)
+checkpoint_config = dict(interval=33)
 log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
-work_dir = 'output/vgg11_b32x8_flowers'
+work_dir = 'output/vgg19_b32x8_flowers'
 gpu_ids = range(0, 1)
