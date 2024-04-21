@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 import torch.nn.functional as F
-import torch
 
 from ..builder import HEADS
 from .cls_head import ClsHead

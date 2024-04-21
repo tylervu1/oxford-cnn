@@ -1,15 +1,57 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 import torch.utils.checkpoint as cp
+import torch.nn.functional as F
 from mmcv.cnn import (ConvModule, build_conv_layer, build_norm_layer,
                       constant_init)
 from mmcv.utils.parrots_wrapper import _BatchNorm
 
 from ..builder import BACKBONES
 from .base_backbone import BaseBackbone
+import torch
+
+class _quanFunc(torch.autograd.Function):
+
+    def __init__(self, tfactor):
+        super(_quanFunc,self).__init__()
+        self.tFactor = tfactor
+        
+    @staticmethod
+    def forward(ctx, input):
+        ctx.save_for_backward(input)
+        max_w = input.abs().max()
+        th = 0.05 * max_w  # threshold, hardcoded tfactor=0.05
+        output = input.clone().zero_()
+        W = input[input.ge(th) + input.le(-th)].abs().mean()
+        output[input.ge(th)] = W
+        output[input.lt(-th)] = -W
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        input, = ctx.saved_tensors
+        grad_input = grad_output.clone()
+        grad_input[input.ge(1)] = 0
+        grad_input[input.le(-1)] = 0
+        return grad_input 
+
+    
+class quanConv2d(nn.Conv2d):
+    def forward(self, input):
+        tfactor_list = [0.05]
+        weight = _quanFunc.apply(self.weight)
+        output = F.conv2d(input, weight, self.bias, self.stride, self.padding, self.dilation, self.groups)
+        return output
+
+def conv3x3(in_channels, out_channels, stride=1):
+    """3x3 convolution with padding"""
+    return quanConv2d(in_channels, out_channels, kernel_size=3, stride=stride,
+                     padding=1, bias=False)
 
 
 class BasicBlock(nn.Module):
+
     """BasicBlock for ResNet.
 
     Args:
@@ -58,27 +100,13 @@ class BasicBlock(nn.Module):
         self.norm_cfg = norm_cfg
 
         self.norm1_name, norm1 = build_norm_layer(
-            norm_cfg, self.mid_channels, postfix=1)
+            norm_cfg, out_channels, postfix=1)
         self.norm2_name, norm2 = build_norm_layer(
             norm_cfg, out_channels, postfix=2)
 
-        self.conv1 = build_conv_layer(
-            conv_cfg,
-            in_channels,
-            self.mid_channels,
-            3,
-            stride=stride,
-            padding=dilation,
-            dilation=dilation,
-            bias=False)
+        self.conv1 = conv3x3(in_channels, self.mid_channels, stride)
         self.add_module(self.norm1_name, norm1)
-        self.conv2 = build_conv_layer(
-            conv_cfg,
-            self.mid_channels,
-            out_channels,
-            3,
-            padding=1,
-            bias=False)
+        self.conv2 = conv3x3(self.mid_channels, out_channels, stride=1)
         self.add_module(self.norm2_name, norm2)
 
         self.relu = nn.ReLU(inplace=True)
@@ -106,6 +134,7 @@ class BasicBlock(nn.Module):
             if self.downsample is not None:
                 identity = self.downsample(x)
             out += identity
+
             return out
 
         if self.with_cp and x.requires_grad:
@@ -181,31 +210,27 @@ class Bottleneck(nn.Module):
         self.norm3_name, norm3 = build_norm_layer(
             norm_cfg, out_channels, postfix=3)
 
-        self.conv1 = build_conv_layer(
-            conv_cfg,
-            in_channels,
-            self.mid_channels,
-            kernel_size=1,
-            stride=self.conv1_stride,
-            bias=False)
+        self.conv1 =  quanConv2d(in_channels, 
+                                 self.mid_channels, 
+                                 kernel_size=1, 
+                                 stride=self.conv1_stride, 
+                                 padding=0, 
+                                 bias=False)
         self.add_module(self.norm1_name, norm1)
-        self.conv2 = build_conv_layer(
-            conv_cfg,
-            self.mid_channels,
-            self.mid_channels,
-            kernel_size=3,
-            stride=self.conv2_stride,
-            padding=dilation,
-            dilation=dilation,
-            bias=False)
+        self.conv2 = quanConv2d(self.mid_channels, 
+                                 self.mid_channels, 
+                                 kernel_size=3, 
+                                 stride=self.conv2_stride, 
+                                 padding=1, 
+                                 bias=False)
 
         self.add_module(self.norm2_name, norm2)
-        self.conv3 = build_conv_layer(
-            conv_cfg,
-            self.mid_channels,
-            out_channels,
-            kernel_size=1,
-            bias=False)
+        self.conv3 = quanConv2d(self.mid_channels, 
+                                 out_channels, 
+                                 kernel_size=1, 
+                                 stride=1, 
+                                 padding=0, 
+                                 bias=False)
         self.add_module(self.norm3_name, norm3)
 
         self.relu = nn.ReLU(inplace=True)
@@ -227,6 +252,7 @@ class Bottleneck(nn.Module):
 
         def _inner_forward(x):
             identity = x
+
             out = self.conv1(x)
             out = self.norm1(out)
             out = self.relu(out)
@@ -330,22 +356,9 @@ class ResLayer(nn.Sequential):
         if stride != 1 or in_channels != out_channels:
             downsample = []
             conv_stride = stride
-            if avg_down and stride != 1:
-                conv_stride = 1
-                downsample.append(
-                    nn.AvgPool2d(
-                        kernel_size=stride,
-                        stride=stride,
-                        ceil_mode=True,
-                        count_include_pad=False))
             downsample.extend([
-                build_conv_layer(
-                    conv_cfg,
-                    in_channels,
-                    out_channels,
-                    kernel_size=1,
-                    stride=conv_stride,
-                    bias=False),
+                quanConv2d(in_channels, out_channels,
+                          kernel_size=1, stride=conv_stride, bias=False),
                 build_norm_layer(norm_cfg, out_channels)[1]
             ])
             downsample = nn.Sequential(*downsample)
@@ -375,7 +388,7 @@ class ResLayer(nn.Sequential):
 
 
 @BACKBONES.register_module()
-class ResNet(BaseBackbone):
+class ResNet_AllTern(BaseBackbone):
     """ResNet backbone.
 
     Please refer to the `paper <https://arxiv.org/abs/1512.03385>`__ for
@@ -463,9 +476,9 @@ class ResNet(BaseBackbone):
                          val=1,
                          layer=['_BatchNorm', 'GroupNorm'])
                  ]):
-        super(ResNet, self).__init__(init_cfg)
+        super(ResNet_AllTern, self).__init__(init_cfg)
         if depth not in self.arch_settings:
-            raise KeyError(f'invalid depth {depth} for resnet')
+            raise KeyError(f'invalid depth {depth} for resnet_alltern')
         self.depth = depth
         self.stem_channels = stem_channels
         self.base_channels = base_channels
@@ -558,14 +571,7 @@ class ResNet(BaseBackbone):
                     norm_cfg=self.norm_cfg,
                     inplace=True))
         else:
-            self.conv1 = build_conv_layer(
-                self.conv_cfg,
-                in_channels,
-                stem_channels,
-                kernel_size=7,
-                stride=2,
-                padding=3,
-                bias=False)
+            self.conv1 = quanConv2d(in_channels, stem_channels, kernel_size=7, stride=2, padding=3, bias=False)
             self.norm1_name, norm1 = build_norm_layer(
                 self.norm_cfg, stem_channels, postfix=1)
             self.add_module(self.norm1_name, norm1)
@@ -591,7 +597,7 @@ class ResNet(BaseBackbone):
                 param.requires_grad = False
 
     def init_weights(self):
-        super(ResNet, self).init_weights()
+        super(ResNet_AllTern, self).init_weights()
 
         if (isinstance(self.init_cfg, dict)
                 and self.init_cfg['type'] == 'Pretrained'):
@@ -622,27 +628,10 @@ class ResNet(BaseBackbone):
         return tuple(outs)
 
     def train(self, mode=True):
-        super(ResNet, self).train(mode)
+        super(ResNet_AllTern, self).train(mode)
         self._freeze_stages()
         if mode and self.norm_eval:
             for m in self.modules():
                 # trick: eval have effect on BatchNorm only
                 if isinstance(m, _BatchNorm):
                     m.eval()
-
-
-@BACKBONES.register_module()
-class ResNetV1d(ResNet):
-    """ResNetV1d backbone.
-
-    This variant is described in `Bag of Tricks.
-    <https://arxiv.org/pdf/1812.01187.pdf>`_.
-
-    Compared with default ResNet(ResNetV1b), ResNetV1d replaces the 7x7 conv in
-    the input stem with three 3x3 convs. And in the downsampling block, a 2x2
-    avg_pool with stride 2 is added before conv, whose stride is changed to 1.
-    """
-
-    def __init__(self, **kwargs):
-        super(ResNetV1d, self).__init__(
-            deep_stem=True, avg_down=True, **kwargs)
