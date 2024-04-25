@@ -99,7 +99,7 @@ The testing results seem a bit fluctuating and we are still looking for improvem
 ## Progress from Peter Lu
 
 ## Method to run the codes.
-Upload the labels.csv file and the images dataset file on to google drive, the the codes will be executable in google colab(Pay special attention to the paths of the uploaded files).
+Upload the labels.csv file and the images dataset folder (called jpg, with 17 sub folders inside) on to google drive, the the codes will be executable in google colab(Pay special attention to the paths of the uploaded files).
 
 
 ## AlexNet
