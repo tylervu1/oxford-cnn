@@ -1,4 +1,4 @@
-# Midterm Report Progress
+# Final Report Progress
 ## Progress from Tyler Vu + Helen Zhao
 ### Setup
 The initial resnet18 model is the same one from Tutorial 1. We went ahead and implemented this model on the HKU Phase 2
@@ -15,42 +15,70 @@ pip install -e .
 pip install yapf==0.40.1
 ```
 
-### Training + other models
-We were also able to successfully implement resnet34_flowers and resnet50_flowers. Training typically takes a long time so to have this run in the background, the bash script train_models.sh was added (basically runs all your training commands consecutively). To use this, run the following:
+### Training
+We were also able to successfully implement resnet18, resnet34, resnet50, resnet50 w/mixup. 
 
-```shell
-chmod +x train_models.sh
-./train_models.sh
+``` shell
+python tools/train.py \
+    --config 'configs/resnet/resnet18_flowers_bs128.py' \
+    --work-dir 'output/resnet18_flowers_bs128'
+
+python tools/train.py \
+    --config 'configs/resnet/resnet34_b16x8_flowers.py' \
+    --work-dir 'output/resnet34_b16x8_flowers'
+
+python tools/train.py \
+    --config 'configs/resnet/resnet50_b16x8_flowers.py' \
+    --work-dir 'output/resnet50_b16x8_flowers'
+
+python tools/train.py \
+    --config 'configs/resnet/resnet50_b16x8_flowers_mixup.py' \
+    --work-dir 'output/resnet50_b16x8_flowers_mixup'
 ```
 
-^ also feel free to take a look at this script to see what commands are running to adjust accordingly
+We also implemented a ternarization on top of resnet18 which you can train with
 
-We also attempted to implement resnet50_flowers_cutmix, resnet50_flowers_mixup, resnet101_flowers, resnet152_flowers. However, we ran into issues usually regarding memory issues.
+```shell
+python tools/train.py \
+    --config 'configs/resnet/resnet18_flowers_bs128_alltern.py' \
+    --work-dir 'output/resnet18_flowers_bs128_alltern'
+```
 
 ### Test 
 You can test the trained model by running the following command
 ```shell
 python tools/test.py \
-  --config 'configs/resnet/resnet18_flowers_bs128.py' \
-  --checkpoint 'output/resnet18_flowers_bs128/epoch_99.pth' \
-  --out 'output/resnet18_flowers_bs128/test.json'
+  --config 'configs/resnet/resnet18_flowers_bs128.py' \
+  --checkpoint 'output/resnet18_flowers_bs128/epoch_99.pth' \
+  --out 'output/resnet18_flowers_bs128/test.json'
 
 python tools/test.py \
-  --config 'configs/resnet/resnet34_b16x8_flowers.py' \
-  --checkpoint 'output/resnet34_b16x8_flowers/epoch_99.pth' \
-  --out 'output/resnet34_b16x8_flowers/test.json'
+  --config 'configs/resnet/resnet34_b16x8_flowers.py' \
+  --checkpoint 'output/resnet34_b16x8_flowers/epoch_99.pth' \
+  --out 'output/resnet34_b16x8_flowers/test.json'
 
 python tools/test.py \
-  --config 'configs/resnet/resnet50_b16x8_flowers.py' \
-  --checkpoint 'output/resnet50_b16x8_flowers/epoch_99.pth' \
-  --out 'output/resnet50_b16x8_flowers/test.json'
+  --config 'configs/resnet/resnet50_b16x8_flowers.py' \
+  --checkpoint 'output/resnet50_b16x8_flowers/epoch_99.pth' \
+  --out 'output/resnet50_b16x8_flowers/test.json'
 
+python tools/test.py \
+  --config 'configs/resnet/resnet50_b16x8_flowers_mixup.py' \
+  --checkpoint 'output/resnet50_b16x8_flowers_mixup/epoch_99.pth' \
+  --out 'output/resnet50_b16x8_flowers_mixup/test.json'
+
+python tools/test.py \
+  --config 'configs/resnet/resnet18_flowers_bs128_alltern.py' \
+  --checkpoint 'output/resnet18_flowers_bs128_alltern/epoch_99.pth' \
+  --out 'output/resnet18_flowers_bs128_alltern/test.json'
 ```
 The output file will be saved in the ```--out```.
 
-I found that testing results were pretty accurate (97.7% testing classification using the 100th epoch). 200 epochs seemed a big redundant, so running 100 epochs should be fine. However, if we want to see further variations/performance improvements between models, we could potentially lower the epochs even further.
 
-At the time I am writing this readme, I am currently training resnet34_flowers and resnet50_flowers, so I will update the testing results once finished. For our midterm report, it would be good to report the results (hopefully improved) with these larger models. However, either further fine-tuning or other models such as VGG or VIT would be beneficial to build a sufficient midterm report.
+## Method to run file: ResNet18_advanced_ternarized.ipynb.
+Download the labels_updated.csv file and the images dataset folder called jpg_labeled, with 17 sub folders inside. Update the parameters 'csv_file' and 'root_dir' as specified at the top of the notebook to the paths of the respective downloaded files. 
+
+
 
 ## Progress from Robby Chu
 
@@ -98,7 +126,7 @@ The testing results seem a bit fluctuating and we are still looking for improvem
 
 ## Progress from Peter Lu
 
-## Method to run the codes.
+## Method to run files: ResNet18_ternarized.ipynb, ResNet18_from_scratch.ipynb, and ResNet18_pretained_(full_precision_values).ipynb.
 Upload the labels.csv file and the images dataset folder (called jpg, with 17 sub folders inside) on to google drive, the the codes will be executable in google colab(Pay special attention to the paths of the uploaded files).
 
 
