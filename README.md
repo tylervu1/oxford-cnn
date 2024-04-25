@@ -126,8 +126,8 @@ The testing results seem a bit fluctuating and we are still looking for improvem
 
 ## Progress from Peter Lu
 
-## Method to run the codes.
-Upload the labels.csv file and the images dataset file on to google drive, the the codes will be executable in google colab. The labels.csv file is in this Github. (Pay special attention to the paths of the uploaded files, please update the path in the code if it does not link to the location of your dirve).
+## Method to run files: ResNet18_ternarized.ipynb, ResNet18_from_scratch.ipynb, and ResNet18_pretained_(full_precision_values).ipynb.
+Upload the labels.csv file and the images dataset folder (called jpg, with 17 sub folders inside) on to google drive, the the codes will be executable in google colab(Pay special attention to the paths of the uploaded files).
 
 
 ## AlexNet
