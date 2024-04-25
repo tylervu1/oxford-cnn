@@ -127,6 +127,9 @@ The testing results seem a bit fluctuating and we are still looking for improvem
 ## Progress from Peter Lu
 
 ## Method to run files: ResNet18_ternarized.ipynb, ResNet18_from_scratch.ipynb, and ResNet18_pretained_(full_precision_values).ipynb.
+
+Download the folder 'jpg' linked here onto Google Drive: https://drive.google.com/drive/folders/151bqxB8iyR1ApxwTt9fliVDX59JjrxZD?usp=sharing
+
 Upload the labels.csv file and the images dataset folder (called jpg, with 17 sub folders inside) on to google drive, the the codes will be executable in google colab(Pay special attention to the paths of the uploaded files).
 
 
