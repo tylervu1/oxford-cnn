@@ -126,13 +126,18 @@ The testing results seem a bit fluctuating and we are still looking for improvem
 
 ## Progress from Peter Lu
 
-## Method to run files: ResNet18_ternarized.ipynb, ResNet18_from_scratch.ipynb, and ResNet18_pretained_(full_precision_values).ipynb.
-Upload the labels.csv file and the images dataset folder (called jpg, with 17 sub folders inside) on to google drive, the the codes will be executable in google colab(Pay special attention to the paths of the uploaded files).
+## Method to run the codes.
+Upload the labels.csv file and the images dataset file on to google drive, the the codes will be executable in google colab. The labels.csv file is in this Github. (Pay special attention to the paths of the uploaded files, please update the path in the code if it does not link to the location of your dirve).
 
 
 ## AlexNet
 
 An AlexNet model was implemented from scratch. The model was designed with 17 classed to fit the usage of flower dataset, also reshaping every image to the standard 227*227 pixels. The 1380 images are divided into 17 folders with each folder containing 80 images from respective class. A CSV file called labels.csv is also created to store a list with images and its labels. The model was trained using V100 in Colab. The training and testing accuracies are plotted against the number of epochs from 1 to 100. The highest testing accuracy is 65.82%, when epoch is 48, not extremely high, but reasonable considering that it has 17 different classes. The code of AlexNet implemented from scratch is in "AlexNet_complete_code.ipynb"
+
+## ResNet18 models
+
+Three ResNet18 models are implemented, with the first one being ResNet18 trained from scratch using our Oxford Flowers dataset, the second one being a ResNet18 pretrained on ImageNet with full precision values, and fine tuned on our Oxford Flower dataset(base model), and the thrid one being a ResNet18 trained from scratch using our dataset and with ternarized values on all layers. These three models together with other models implemented by other groupmates will form a thorough comparision of accuracy and efficiency between different variations of the base model. The codes are in "ResNet18_from_scratch.ipynb", "Resnet18_pretrained_(full_precision_values).ipynb" and "ResNet18_ternarized.ipynb". Accuracy and efficiency comparision of these models are in the report.
+
 
 ## Introduction
 
